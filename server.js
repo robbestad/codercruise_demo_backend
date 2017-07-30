@@ -6,6 +6,8 @@ const router = new Router()
 const convert = require("koa-convert")
 const bodyParser = require("koa-body")
 const logger = require("debug")
+const cors = require('koa-cors');
+
 const getImages = require("./src/index")
 const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectID
@@ -22,20 +24,11 @@ router
         const {key} = ctx.params
         ctx.body = await getImages(db)
             .then(data => data)
-
-        // ctx.body = await new Promise((resolve, reject) => {
-        //     getContent(phrase, key)
-        //         .then(data => {
-        //             resolve(data)
-        //         })
-        //         .catch(err => {
-        //             reject(err)
-        //         })
-        // })
     })
 
 
 const app = new Koa()
+    .use(cors())
     .use(convert(bodyParser()))
     .use(router.routes())
     .use(router.allowedMethods())
